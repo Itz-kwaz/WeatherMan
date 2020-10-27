@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_man/Core/constants.dart';
 
+import 'reUsableWidgets/miniWidget.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -74,7 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text('20',
                   style: GoogleFonts.muli(
                     textStyle: Theme.of(context).textTheme.headline4,
-                    color: kTextColor
+                    color: kTextColor,
+                    fontWeight: FontWeight.bold
                   ),)
                 ],
               ),
@@ -85,9 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                MiniWidget(),
-                MiniWidget(),
-                MiniWidget()
+                MiniWidget(textColor: kTextColor,),
+                MiniWidget(textColor: kTextColor,),
+                MiniWidget(textColor: kTextColor,)
               ],
             ),
             SizedBox(
@@ -175,32 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class MiniWidget extends StatelessWidget {
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Placeholder(
-          fallbackWidth: MediaQuery.of(context).size.width  * 0.06,
-          fallbackHeight: MediaQuery.of(context).size.height * 0.06,
-          color: Colors.red,
-        ),
-        SizedBox(
-          height: 8.0,
-        ),
-        Text(
-          '9 km/h',
-          style: GoogleFonts.muli(
-            textStyle: Theme.of(context).textTheme.subtitle2,
-            fontWeight: FontWeight.bold,
-            color: kTextColor
-          ),
-        )
-      ],
-    );
-  }
-}
 
 
 
