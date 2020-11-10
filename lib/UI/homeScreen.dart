@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_man/Core/constants.dart';
+import 'package:weather_man/Core/state/weatherModel.dart';
 
 import 'reUsableWidgets/miniWidget.dart';
 
@@ -10,14 +11,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  WeatherModel model = WeatherModel();
   @override
   Widget build(BuildContext context) {
+    model.fetchData();
     return Scaffold(
       backgroundColor: kWhite,
-      appBar: AppBar(
-        backgroundColor: kWhite,
-        elevation: 0,
-      ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
@@ -73,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     width: 8.0,
                   ),
-                  Text('20',
+                  Text(model.temperature.toString(),
                   style: GoogleFonts.muli(
                     textStyle: Theme.of(context).textTheme.headline4,
                     color: kTextColor,

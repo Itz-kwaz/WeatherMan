@@ -6,7 +6,7 @@ class WeatherMan extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: Routes.next7DaysScreen,
+      initialRoute: Routes.homeScreen,
       routes: Routes.routes(),
     );
   }
