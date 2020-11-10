@@ -40,4 +40,22 @@ class Weather {
       iconUrl: json['weather'][0]['icon'],
     );
   }
+
+
+  ///for passing Daily Weather
+  factory Weather.fromJson2(Map<String, dynamic> json) {
+    var date =
+    DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000, isUtc: true);
+    return Weather(
+      time: json['dt'],
+      temperature: json['temp']['day'],
+      humidity: json['humidity'],
+      windSpeed: json['wind_speed'],
+      cloudiness: json['clouds'],
+      sunrise: json['sunrise'],
+      sunset: json['sunset'],
+      weatherCondition: json['weather'][0]['description'],
+      iconUrl: json['weather'][0]['icon'],
+    );
+  }
 }
