@@ -1,40 +1,68 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:weather_man/Core/hourlyWeather.dart';
-
+import 'package:weather_man/Core/Weather.dart';
+import 'package:location/location.dart';
 import '../constants.dart';
 
 class WeatherModel{
-  var temperature;
-  var weatherCondition;
-  var windSpeed;
-  var cloudiness;
-  var humidity;
-  var sunrise;
-  var sunset;
-  var weatherIcon;
 
-  List<HourlyWeather> hourlyWeatherList = [];
+  double latitude;
+  double longitude;
+  Weather currentWeather = Weather();
+
+
+  List<Weather> hourlyWeatherList = [];
   Future<void> fetchData() async{
+    await getLocation();
     try{
-      Response response = await Dio().get(ONE_CALL_URL);
+      Map<String,dynamic> queryParams = {
+        'lat' : latitude,
+        'lon' : longitude,
+        'exclude' : 'alerts,minutely',
+        'appid' : API_KEY
+      };
+      Response response = await Dio().get(ONE_CALL_URL,queryParameters: queryParams);
       if(response.statusCode == 200){
-        print(response.data);
-        var currentData = response.data['current'];
-        temperature = currentData['temp'];
-        humidity  = currentData['humidity'];
-        windSpeed = currentData['wind_speed'];
-        sunrise = currentData['sunrise'];
-        sunset = currentData['sunset'];
-        cloudiness = currentData['clouds'];
-        weatherCondition = currentData[0]['description'];
-        weatherIcon = currentData[0]['icon'];
+        currentWeather = Weather.fromJson(response.data['current']);
+
+        hourlyWeatherList = response.data['hourly'].map<Weather>((json) => Weather.fromJson(json)).toList();
+
+        var date = DateTime.fromMillisecondsSinceEpoch(hourlyWeatherList.elementAt(0).time * 1000, isUtc: true);
+        print('The time of the first hourly weather is ${date.toString()}');
 
 
       }
-    }catch(e){
-      print(e);
+    } on DioError catch(e){
+
     }
 
+  }
+
+  Future<void> getLocation () async{
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    latitude = _locationData.latitude;
+    longitude = _locationData.longitude;
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_man/Core/constants.dart';
+import 'package:weather_man/Core/Weather.dart';
+import 'package:weather_man/Core/routes.dart';
 import 'package:weather_man/Core/state/weatherModel.dart';
 
 import 'reUsableWidgets/miniWidget.dart';
@@ -15,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     model.fetchData();
+    Weather currentWeather = model.currentWeather;
     return Scaffold(
       backgroundColor: kWhite,
       body: Container(
@@ -72,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     width: 8.0,
                   ),
-                  Text(model.temperature.toString(),
+                  Text(model.currentWeather.temperature.toString(),
                   style: GoogleFonts.muli(
                     textStyle: Theme.of(context).textTheme.headline4,
                     color: kTextColor,
@@ -87,9 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                MiniWidget(textColor: kTextColor,),
-                MiniWidget(textColor: kTextColor,),
-                MiniWidget(textColor: kTextColor,)
+                MiniWidget(textColor: kTextColor,title: 'Humidity', value: currentWeather.humidity.toString(),),
+                MiniWidget(textColor: kTextColor,title: 'Cloudiness',value: currentWeather.cloudiness.toString(),),
+                MiniWidget(textColor: kTextColor, title : 'Wind Speed', value : currentWeather.windSpeed.toString())
               ],
             ),
             SizedBox(
@@ -104,17 +107,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     textStyle: Theme.of(context).textTheme.subtitle2,
                       fontWeight: FontWeight.w700
                   ),),
-                  Row(
-                    children: [
-                      Text('Next 7 Days',
-                      style: GoogleFonts.muli(
-                        textStyle: Theme.of(context).textTheme.subtitle2,
-                        color: kTextColor,
-                        fontWeight: FontWeight.w700
-                      ),),
-                      Icon(Icons.keyboard_arrow_right_rounded,
-                      color: kTextColor,)
-                    ],
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context,Routes.next7DaysScreen);
+                    },
+                    child: Row(
+                      children: [
+                        Text('Next 7 Days',
+                        style: GoogleFonts.muli(
+                          textStyle: Theme.of(context).textTheme.subtitle2,
+                          color: kTextColor,
+                          fontWeight: FontWeight.w700
+                        ),),
+                        Icon(Icons.keyboard_arrow_right_rounded,
+                        color: kTextColor,)
+                      ],
+                    ),
                   )
                 ],
             ),
@@ -124,7 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
+                itemCount : model.hourlyWeatherList.length,
                 itemBuilder: (BuildContext context, int index) {
+                  Weather hourlyWeather = model.hourlyWeatherList[index];
                   return Container(
                     padding: EdgeInsets.all(8.0),
                     margin: EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
@@ -140,14 +150,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            '10:00',
+                            hourlyWeather.time.toString(),
                             style: GoogleFonts.muli(
                               textStyle: Theme.of(context).textTheme.subtitle1,
                               color: Colors.grey
                             ),
                           ),
                         ),
-                        Expanded(child: Center(
+                        Expanded(
+                            child: Center(
                           child: Placeholder(
                             color: Colors.green,
                             fallbackWidth: 40.0,
@@ -156,7 +167,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         Expanded(
                             child: Center(
-                              child: Text('20',
+                              child: Text(
+                                hourlyWeather.temperature.toString(),
                               style: GoogleFonts.muli(
                                 textStyle: Theme.of(context).textTheme.subtitle1,
                                 color: kTextColor,

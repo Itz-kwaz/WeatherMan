@@ -4,7 +4,9 @@ import 'package:weather_man/Core/constants.dart';
 
 class MiniWidget extends StatelessWidget {
   final Color textColor;
-  MiniWidget({@required this.textColor}) : assert(textColor != null);
+  final String title;
+  final String value;
+  MiniWidget({@required this.textColor,@required this.title,this.value}) : assert(textColor != null);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -18,7 +20,17 @@ class MiniWidget extends StatelessWidget {
           height: 8.0,
         ),
         Text(
-          '9 km/h',
+          title,
+          style: GoogleFonts.muli(
+              textStyle: Theme.of(context).textTheme.subtitle2,
+              fontWeight: FontWeight.bold,
+              color: textColor),
+        ),
+        SizedBox(
+          height: 4.0,
+        ),
+        Text(
+          value,
           style: GoogleFonts.muli(
               textStyle: Theme.of(context).textTheme.subtitle2,
               fontWeight: FontWeight.bold,
