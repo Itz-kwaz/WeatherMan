@@ -1,18 +1,20 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:weather_man/Core/Weather.dart';
 import 'package:location/location.dart';
 import '../constants.dart';
 
-class WeatherModel{
+class WeatherModel extends ChangeNotifier{
 
   double latitude;
   double longitude;
   Weather currentWeather = Weather();
-
+bool isLoading = true;
 
   List<Weather> hourlyWeatherList = [];
   Future<void> fetchData() async{
     await getLocation();
+    //TODO: Add an error field
     try{
       Map<String,dynamic> queryParams = {
         'lat' : latitude,
@@ -25,7 +27,6 @@ class WeatherModel{
         currentWeather = Weather.fromJson(response.data['current']);
 
         hourlyWeatherList = response.data['hourly'].map<Weather>((json) => Weather.fromJson(json)).toList();
-
         var date = DateTime.fromMillisecondsSinceEpoch(hourlyWeatherList.elementAt(0).time * 1000, isUtc: true);
         print('The time of the first hourly weather is ${date.toString()}');
 
@@ -34,7 +35,10 @@ class WeatherModel{
     } on DioError catch(e){
 
     }
-
+    finally{
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> getLocation () async{
